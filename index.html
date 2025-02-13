@@ -1,6 +1,125 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ML Valentine's Day</title>
+    <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'EB Garamond', serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            background-color: #ffffff;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        .background-heart {
+            position: fixed;
+            z-index: -1;
+            opacity: 1.0;
+            pointer-events: none;
+            fill: #be3b72;
+        }
+        .container {
+            padding: 2rem;
+            max-width: 600px;
+            margin: 20px;
+            position: relative;
+            z-index: 1;
+        }
+        .valentine {
+            font-size: 32px;
+            color: #be3b72;
+            margin: 20px 0;
+            line-height: 1.4;
+            min-height: 100px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 500;
+            white-space: pre-line;
+        }
+        .refresh-btn {
+            background-color: #ff4d4d;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s;
+        }
+        .refresh-btn:hover {
+            background-color: #ff3333;
+        }
+    </style>
+</head>
 <body>
-<p>ml-valentines<p/>
+    <img src="assets/heart.svg" class="background-heart" id="heart1" style="display: none;">
+    <img src="assets/heart.svg" class="background-heart" id="heart2" style="display: none;">
+    <img src="assets/heart.svg" class="background-heart" id="heart3" style="display: none;">
+    
+    <div class="container">
+        <div class="valentine" id="valentine-text">Loading...</div>
+        <!-- <button class="refresh-btn" onclick="loadNewValentine()">New Valentine ❤️</button> -->
+    </div>
+
+    <script>
+        let valentines = [];
+
+        function positionHearts() {
+            const hearts = ['heart1', 'heart2', 'heart3'];
+            hearts.forEach(id => {
+                const heart = document.getElementById(id);
+                // Random size between 200px and 400px
+                const size = Math.random() * 200 + 200;
+                heart.style.width = `${size}px`;
+                heart.style.height = `${size}px`;
+                
+                // Random position
+                const x = Math.random() * (window.innerWidth - size);
+                const y = Math.random() * (window.innerHeight - size);
+                heart.style.left = `${x}px`;
+                heart.style.top = `${y}px`;
+                
+                // Random rotation within 30 degrees of upright (±15 degrees)
+                const rotation = (Math.random() * 30 - 15);
+                heart.style.transform = `rotate(${rotation}deg)`;
+                
+                heart.style.display = 'block';
+            });
+        }
+
+        async function loadValentines() {
+            try {
+                const response = await fetch('assets/ml-valentines.json');
+                const data = await response.json();
+                valentines = data.valentines;
+                loadNewValentine();
+            } catch (error) {
+                document.getElementById('valentine-text').textContent = 'Error loading valentines :(';
+            }
+        }
+
+        function loadNewValentine() {
+            if (valentines.length > 0) {
+                const randomIndex = Math.floor(Math.random() * valentines.length);
+                const valentine = valentines[randomIndex].replace(/\n/g, '<br>');
+                document.getElementById('valentine-text').innerHTML = valentine;
+            }
+        }
+
+        // Position hearts and load valentines when page loads
+        positionHearts();
+        loadValentines();
+
+        // Reposition hearts when window is resized
+        window.addEventListener('resize', positionHearts);
+    </script>
 </body>
 </html>
