@@ -1,5 +1,5 @@
 {
-  "valentines": [
+  "regular": [
     "you make my heart's matrix full rank",
     "may we never be linearly separable",
     "you're the activation function of my heart",
@@ -68,6 +68,39 @@
     "keeping it A100, i love you",
     "are you overfitting? because you're too good to be true",
     "you're the o1 for me",
-    "my AGI timeline is five years, but my timeline with you is forever"
+    "my AGI timeline is five years, but my timeline with you is forever",
+    "i want to close the distance between us like a tabular bellman backup"
+  ],
+  "robot": [
+    "let's hold end effectors",
+    "i don't need path planning because my heart already knows the shortest route to yours",
+    "are you structure from motion? because you bring dimension to my world",
+    "i'd move beyond my joint limits for you",
+    "you must be my demonstration data because you show me the right way to act",
+    "are you a state filter? because you smooth out all the noise in my life",
+    "my navigation algorithm always leads me back to you",
+    "visual servoing status: locked onto your smile",
+    "life without you is like being a robot without sensors—stumbling in the dark",
+    "you're the minimum time solution to my heart's desires",
+    "you put me into a singularity, because my degrees of freedom are lost in your eyes",
+    "are you my mesh file? because you give shape to my existence",
+    "like a redundant manipulator, i have infinitely many ways to love you",
+    "my feelings for you are rapidly and randomly expanding",
+    "i want to find the shortest path to your heart, you're the only star i see",
+    "you make my heart sway like a double inverted pendulum",
+    "let me use my tactile sensors on you",
+    "just like DUSt3R, i need to see you from all angles",
+    "you're one (ROS) foxy fitzroy ;)",
+    "you make my heart run faster than half-cheetah-v4",
+    "i want more degrees of freedom so all of you is within my reachable workspace",
+    "all the gradients in my potential field point to you",
+    "i don't need grasp prediction to learn how to hold your hand",
+    "my favorite task is pick (up your hand)-and-place (it in mine)",
+    "i don't need contact modeling to know what will happen when our hearts collide",
+    "no velocity limits can stop me from racing toward you",
+    "i'll love you across every embodiment",
+    "no obstacle avoidance can stop the collision of our hearts",
+    "if you were a ROS node i'd subscribe to all of your topics",
+    "you and i must be pretty similar in DINO embedding space"
   ]
 }

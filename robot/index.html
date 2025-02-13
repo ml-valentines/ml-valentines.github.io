@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ML Valentine's Day</title>
+    <title>Robot Valentine's Day</title>
     <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
     <style>
         body {
@@ -23,7 +23,7 @@
             z-index: -1;
             opacity: 1.0;
             pointer-events: none;
-            fill: #be3b72;
+            fill: #4d79ff;
         }
         .container {
             padding: 2rem;
@@ -34,7 +34,7 @@
         }
         .valentine {
             font-size: 32px;
-            color: #be3b72;
+            color: #8E3BBE;
             margin: 20px 0;
             line-height: 1.4;
             min-height: 100px;
@@ -43,19 +43,6 @@
             justify-content: center;
             font-weight: 500;
             white-space: pre-line;
-        }
-        .refresh-btn {
-            background-color: #ff4d4d;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 16px;
-            transition: background-color 0.3s;
-        }
-        .refresh-btn:hover {
-            background-color: #ff3333;
         }
         .button-container {
             display: flex;
@@ -67,7 +54,7 @@
             right: 0;
             z-index: 2;
             font-size: 24px;
-            color: #be3b72;
+            color: #8E3BBE;
         }
         .mode-text {
             color: inherit;
@@ -85,16 +72,16 @@
     </style>
 </head>
 <body>
-    <img src="assets/heart.svg" class="background-heart" id="heart1" style="display: none;">
-    <img src="assets/heart.svg" class="background-heart" id="heart2" style="display: none;">
-    <img src="assets/heart.svg" class="background-heart" id="heart3" style="display: none;">
+    <img src="../assets/heart-purple.svg" class="background-heart" id="heart1" style="display: none;">
+    <img src="../assets/heart-purple.svg" class="background-heart" id="heart2" style="display: none;">
+    <img src="../assets/heart-purple.svg" class="background-heart" id="heart3" style="display: none;">
     
     <div class="container">
         <div class="valentine" id="valentine-text">Loading...</div>
     </div>
     
     <div class="button-container">
-        <span class="mode-text">robot mode: </span><a href="/robot" class="mode-toggle">off</a>
+        <span class="mode-text">robot mode: </span><a href="/" class="mode-toggle">on</a>
     </div>
 
     <script>
@@ -125,11 +112,14 @@
             });
         }
 
+        // Add window resize handler
+        window.addEventListener('resize', positionHearts);
+
         async function loadValentines() {
             try {
-                const response = await fetch('assets/ml-valentines.json');
+                const response = await fetch('../assets/ml-valentines.json');
                 const data = await response.json();
-                valentines = data.regular;
+                valentines = data.robot;
                 loadNewValentine();
             } catch (error) {
                 document.getElementById('valentine-text').textContent = 'Error loading valentines :(';
@@ -137,19 +127,20 @@
         }
 
         function loadNewValentine() {
-            if (valentines.length > 0) {
-                const randomIndex = Math.floor(Math.random() * valentines.length);
-                const valentine = valentines[randomIndex].replace(/\n/g, '<br>');
-                document.getElementById('valentine-text').innerHTML = valentine;
-            }
+            const randomIndex = Math.floor(Math.random() * valentines.length);
+            document.getElementById('valentine-text').textContent = valentines[randomIndex];
         }
 
         // Position hearts and load valentines when page loads
         positionHearts();
         loadValentines();
 
-        // Reposition hearts when window is resized
-        window.addEventListener('resize', positionHearts);
+        // Add click event listener to load new valentine
+        document.addEventListener('click', function(event) {
+            if (event.target.tagName !== 'BUTTON') {
+                loadNewValentine();
+            }
+        });
     </script>
 </body>
 </html>
