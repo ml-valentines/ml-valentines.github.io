@@ -1,2 +1,0 @@
-let’s hold end effectors
-i don’t need path planning because my heart already knows the shortest route to yours
