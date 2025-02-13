@@ -23,7 +23,8 @@
             z-index: -1;
             opacity: 1.0;
             pointer-events: none;
-            fill: #4d79ff;
+            fill: #8E3BBE;
+            transition: transform 0.3s;
         }
         .container {
             padding: 2rem;
@@ -86,15 +87,16 @@
 
     <script>
         let valentines = [];
+        let heartVelocities = [];
+        let animationFrameId;
 
         function positionHearts() {
             const hearts = ['heart1', 'heart2', 'heart3'];
-            const minSize = Math.min(window.innerWidth, window.innerHeight) * 0.2; // 20% of smallest dimension
-            const maxSize = Math.min(window.innerWidth, window.innerHeight) * 0.4; // 40% of smallest dimension
+            const minSize = Math.min(window.innerWidth, window.innerHeight) * 0.2;
+            const maxSize = Math.min(window.innerWidth, window.innerHeight) * 0.4;
 
-            hearts.forEach(id => {
+            hearts.forEach((id, index) => {
                 const heart = document.getElementById(id);
-                // Size between 20% and 40% of the smallest window dimension
                 const size = Math.random() * (maxSize - minSize) + minSize;
                 heart.style.width = `${size}px`;
                 heart.style.height = `${size}px`;
@@ -109,11 +111,68 @@
                 const rotation = (Math.random() * 30 - 15);
                 heart.style.transform = `rotate(${rotation}deg)`;
                 heart.style.display = 'block';
+
+                // Initialize velocity for this heart if not already set
+                if (!heartVelocities[index]) {
+                    heartVelocities[index] = {
+                        x: (Math.random() - 0.5) * 2, // Random velocity between -1 and 1
+                        y: (Math.random() - 0.5) * 2,
+                        rotation: (Math.random() - 0.5) * (index + 1) * 0.5, // Slower rotation for smoother movement
+                        size: size,
+                        currentRotation: Math.random() * 360 // Track continuous rotation
+                    };
+                }
             });
+
+            // Start animation if not already running
+            if (!animationFrameId) {
+                animateHearts();
+            }
         }
 
-        // Add window resize handler
-        window.addEventListener('resize', positionHearts);
+        function animateHearts() {
+            const hearts = ['heart1', 'heart2', 'heart3'];
+            
+            hearts.forEach((id, index) => {
+                const heart = document.getElementById(id);
+                const velocity = heartVelocities[index];
+                
+                // Get current position
+                const rect = heart.getBoundingClientRect();
+                let x = parseFloat(heart.style.left);
+                let y = parseFloat(heart.style.top);
+                
+                // Update position and rotation
+                x += velocity.x;
+                y += velocity.y;
+                velocity.currentRotation += velocity.rotation;
+                
+                // Bounce off walls
+                if (x <= 0 || x >= window.innerWidth - velocity.size) {
+                    velocity.x *= -1;
+                }
+                if (y <= 0 || y >= window.innerHeight - velocity.size) {
+                    velocity.y *= -1;
+                }
+                
+                // Apply new position and continuous rotation
+                heart.style.left = `${x}px`;
+                heart.style.top = `${y}px`;
+                heart.style.transform = `rotate(${velocity.currentRotation}deg)`;
+            });
+            
+            animationFrameId = requestAnimationFrame(animateHearts);
+        }
+
+        // Clean up animation when window is hidden
+        document.addEventListener('visibilitychange', () => {
+            if (document.hidden && animationFrameId) {
+                cancelAnimationFrame(animationFrameId);
+                animationFrameId = null;
+            } else if (!document.hidden && !animationFrameId) {
+                animateHearts();
+            }
+        });
 
         async function loadValentines() {
             try {
