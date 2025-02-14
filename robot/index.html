@@ -79,6 +79,35 @@
         .mode-toggle:hover, .suggestion-link:hover {
             opacity: 0.8;
         }
+        .refresh-button {
+            background: none;
+            border: none;
+            color: #8E3BBE;
+            font: inherit;
+            cursor: pointer;
+            padding: 0;
+            text-decoration: underline;
+            transition: opacity 0.3s;
+            font-size: 24px;
+            font-family: 'EB Garamond', serif;
+            position: fixed;
+            bottom: 15vh;
+            left: 0;
+            right: 0;
+            text-align: center;
+            z-index: 2;
+        }
+        .refresh-button:hover {
+            opacity: 0.8;
+        }
+        @media (max-width: 600px) {
+            .valentine {
+                font-size: 24px;
+            }
+            .refresh-button, .button-container {
+                font-size: 18px;
+            }
+        }
     </style>
 </head>
 <!-- Google tag (gtag.js) -->
@@ -98,6 +127,8 @@
     <div class="container">
         <div class="valentine" id="valentine-text">loading...</div>
     </div>
+    
+    <div class="refresh-button" onclick="loadNewValentine()">new valentine</div>
     
     <div class="button-container">
         <div><span class="mode-text">robot mode: </span><a href="/" class="mode-toggle">on</a></div> |
@@ -214,12 +245,8 @@
         positionHearts();
         loadValentines();
 
-        // Add click event listener to load new valentine
-        document.addEventListener('click', function(event) {
-            if (event.target.tagName !== 'BUTTON') {
-                loadNewValentine();
-            }
-        });
+        // Reposition hearts when window is resized
+        window.addEventListener('resize', positionHearts);
     </script>
 </body>
 </html>
