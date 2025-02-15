@@ -92,8 +92,6 @@
             font-family: 'EB Garamond', serif;
             position: fixed;
             bottom: 15vh;
-            left: 0;
-            right: 0;
             text-align: center;
             z-index: 2;
         }
@@ -153,6 +151,7 @@
 
     <script>
         let valentines = [];
+        let currentValentineIndex = 0;
         let heartVelocities = [];
         let animationFrameId;
 
@@ -245,6 +244,12 @@
                 const response = await fetch('../assets/valentines.json');
                 const data = await response.json();
                 valentines = data.robot;
+                // Shuffle the valentines array
+                for (let i = valentines.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [valentines[i], valentines[j]] = [valentines[j], valentines[i]];
+                }
+                currentValentineIndex = 0;
                 loadNewValentine();
             } catch (error) {
                 document.getElementById('valentine-text').textContent = 'Error loading valentines :(';
@@ -252,9 +257,26 @@
         }
 
         function loadNewValentine() {
-            const randomIndex = Math.floor(Math.random() * valentines.length);
-            const valentine = valentines[randomIndex].replace(/\n/g, '<br>');
+            const valentine = valentines[currentValentineIndex].replace(/\n/g, '<br>');
             document.getElementById('valentine-text').innerHTML = valentine;
+
+            // Add a bit of rotation on click.
+            heartVelocities.forEach(velocity => {
+                // Store original value
+                const originalRotation = velocity.rotation;
+                const rotationDelta = velocity.rotation + 0.5;
+
+                // Increase rotation and add random directional bounce
+                velocity.rotation += rotationDelta;
+
+                // Restore original values after animation
+                setTimeout(() => {
+                    velocity.rotation -= rotationDelta;
+                }, 300);
+            });
+            
+            // Move to next valentine, wrap around if at end
+            currentValentineIndex = (currentValentineIndex + 1) % valentines.length;
         }
 
         // Position hearts and load valentines when page loads
