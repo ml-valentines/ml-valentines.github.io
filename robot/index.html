@@ -92,8 +92,6 @@
             font-family: 'EB Garamond', serif;
             position: fixed;
             bottom: 15vh;
-            left: 0;
-            right: 0;
             text-align: center;
             z-index: 2;
         }
@@ -261,6 +259,21 @@
         function loadNewValentine() {
             const valentine = valentines[currentValentineIndex].replace(/\n/g, '<br>');
             document.getElementById('valentine-text').innerHTML = valentine;
+
+            // Add a bit of rotation on click.
+            heartVelocities.forEach(velocity => {
+                // Store original value
+                const originalRotation = velocity.rotation;
+                const rotationDelta = velocity.rotation + 0.5;
+
+                // Increase rotation and add random directional bounce
+                velocity.rotation += rotationDelta;
+
+                // Restore original values after animation
+                setTimeout(() => {
+                    velocity.rotation -= rotationDelta;
+                }, 300);
+            });
             
             // Move to next valentine, wrap around if at end
             currentValentineIndex = (currentValentineIndex + 1) % valentines.length;
