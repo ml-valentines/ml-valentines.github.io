@@ -257,8 +257,121 @@
         }
 
         function loadNewValentine() {
-            const valentine = valentines[currentValentineIndex].replace(/\n/g, '<br>');
-            document.getElementById('valentine-text').innerHTML = valentine;
+            const valentineText = valentines[currentValentineIndex];
+            const valentineElement = document.getElementById('valentine-text');
+            
+            const WORD_DELAY = 100; // Delay between words in a line
+            const LINE_EXTRA_DELAY = 400; // Extra delay between lines
+            const COMMA_EXTRA_DELAY = 200; // Extra delay after commas
+            const HEART_DELAY = 300; // Extra delay before showing the heart
+            const BASE_FADE_DURATION = 300; // Base duration for fade-in
+            const CHAR_FADE_DURATION = 50; // Additional ms per character
+            const MAX_FADE_DURATION = 1000; // Maximum fade duration
+            
+            // Create a container div that will maintain the exact layout
+            const container = document.createElement('div');
+            container.style.display = 'block';
+            container.style.whiteSpace = 'pre-wrap';
+            container.style.wordBreak = 'break-word';
+            container.style.width = '100%';
+            
+            // Split into lines
+            const lines = valentineText.split('\n');
+            
+            // Calculate total words before each line for timing
+            const wordsBeforeLine = lines.map((line, i) => {
+                return lines.slice(0, i).reduce((sum, l) => sum + l.split(/\s+/).filter(w => w.trim()).length, 0);
+            });
+            
+            let maxDelay = 0; // Track the maximum delay for the heart
+            
+            // Process each line
+            lines.forEach((line, lineIndex) => {
+                const lineDiv = document.createElement('div');
+                lineDiv.style.display = 'block';
+                lineDiv.style.width = '100%';
+                
+                if (line.trim() === '') {
+                    // Empty line
+                    const emptyLine = document.createElement('div');
+                    emptyLine.style.height = '1em';
+                    lineDiv.appendChild(emptyLine);
+                } else {
+                    // Process words in the line
+                    const words = line.split(/(\s+)/);
+                    let wordsInCurrentLine = 0;
+                    let extraDelayAccumulator = 0; // Accumulate extra delays from commas
+                    
+                    words.forEach((word, wordIndex) => {
+                        if (word.trim() === '') {
+                            // Space - create a space span that allows wrapping
+                            const spaceSpan = document.createElement('span');
+                            spaceSpan.innerHTML = ' ';
+                            spaceSpan.style.whiteSpace = 'pre-wrap';
+                            lineDiv.appendChild(spaceSpan);
+                        } else {
+                            // Word - create animated span
+                            const wordSpan = document.createElement('span');
+                            wordSpan.textContent = word;
+                            wordSpan.style.opacity = '0';
+                            wordSpan.style.display = 'inline';
+                            lineDiv.appendChild(wordSpan);
+                            
+                            // Calculate fade duration based on word length
+                            const wordLength = word.trim().length;
+                            const fadeDuration = Math.min(
+                                BASE_FADE_DURATION + (wordLength * CHAR_FADE_DURATION),
+                                MAX_FADE_DURATION
+                            );
+                            
+                            // Calculate delay including extra line delay and comma delays
+                            const baseDelay = wordsBeforeLine[lineIndex] * WORD_DELAY;
+                            const lineDelay = lineIndex * LINE_EXTRA_DELAY;
+                            const wordDelay = wordsInCurrentLine * WORD_DELAY;
+                            const totalDelay = baseDelay + lineDelay + wordDelay + extraDelayAccumulator;
+                            
+                            maxDelay = Math.max(maxDelay, totalDelay + fadeDuration);
+                            
+                            setTimeout(() => {
+                                wordSpan.style.transition = `opacity ${fadeDuration}ms ease`;
+                                wordSpan.style.opacity = '1';
+                            }, totalDelay);
+                            
+                            // Add extra delay after commas
+                            if (word.trim().endsWith(',')) {
+                                extraDelayAccumulator += COMMA_EXTRA_DELAY;
+                            }
+                            
+                            wordsInCurrentLine++;
+                        }
+                    });
+                }
+                container.appendChild(lineDiv);
+            });
+            
+            // Create heart element
+            const heartContainer = document.createElement('div');
+            heartContainer.style.textAlign = 'center';
+            heartContainer.style.marginTop = '20px';
+            heartContainer.style.opacity = '0';
+            heartContainer.style.transition = 'opacity 0.5s ease';
+            
+            const heartImg = document.createElement('img');
+            heartImg.src = '../assets/heart-purple.svg';
+            heartImg.style.width = '30px';
+            heartImg.style.height = '30px';
+            heartContainer.appendChild(heartImg);
+            
+            container.appendChild(heartContainer);
+            
+            // Show heart after all words have appeared
+            setTimeout(() => {
+                heartContainer.style.opacity = '1';
+            }, maxDelay + HEART_DELAY);
+            
+            // Replace content
+            valentineElement.innerHTML = '';
+            valentineElement.appendChild(container);
 
             // Add a bit of rotation on click.
             heartVelocities.forEach(velocity => {
