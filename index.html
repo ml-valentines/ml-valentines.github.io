@@ -168,6 +168,7 @@
 
     <script>
         let valentines = [];
+        let currentValentineIndex = 0;
         let heartVelocities = [];
         let animationFrameId;
 
@@ -260,6 +261,12 @@
                 const response = await fetch('assets/valentines.json');
                 const data = await response.json();
                 valentines = data.regular;
+                // Shuffle the valentines array
+                for (let i = valentines.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [valentines[i], valentines[j]] = [valentines[j], valentines[i]];
+                }
+                currentValentineIndex = 0;
                 loadNewValentine();
             } catch (error) {
                 document.getElementById('valentine-text').textContent = 'Error loading valentines :(';
@@ -268,23 +275,26 @@
 
         function loadNewValentine() {
             if (valentines.length > 0) {
-                const randomIndex = Math.floor(Math.random() * valentines.length);
-                const valentine = valentines[randomIndex].replace(/\n/g, '<br>');
+                const valentine = valentines[currentValentineIndex].replace(/\n/g, '<br>');
                 document.getElementById('valentine-text').innerHTML = valentine;
                 
                 // Add a bit of rotation on click.
                 heartVelocities.forEach(velocity => {
                     // Store original value
                     const originalRotation = velocity.rotation;
+                    const rotationDelta = velocity.rotation + 0.5;
                     
                     // Increase rotation and add random directional bounce
-                    velocity.rotation = velocity.rotation * 2 + 0.5;
+                    velocity.rotation += rotationDelta;
                     
                     // Restore original values after animation
                     setTimeout(() => {
-                        velocity.rotation = originalRotation;
+                        velocity.rotation -= rotationDelta;
                     }, 300);
                 });
+
+                // Move to next valentine, wrap around if at end
+                currentValentineIndex = (currentValentineIndex + 1) % valentines.length;
             }
         }
 
