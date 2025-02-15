@@ -267,6 +267,20 @@
                 const randomIndex = Math.floor(Math.random() * valentines.length);
                 const valentine = valentines[randomIndex].replace(/\n/g, '<br>');
                 document.getElementById('valentine-text').innerHTML = valentine;
+                
+                // Add a bit of rotation on click.
+                heartVelocities.forEach(velocity => {
+                    // Store original value
+                    const originalRotation = velocity.rotation;
+                    
+                    // Increase rotation and add random directional bounce
+                    velocity.rotation = velocity.rotation * 2 + 0.5;
+                    
+                    // Restore original values after animation
+                    setTimeout(() => {
+                        velocity.rotation = originalRotation;
+                    }, 300);
+                });
             }
         }
 
